@@ -1,0 +1,7 @@
+{
+  "name": "cheery-coffee-pos",
+  "version": "1.1.0",
+  "scripts": {
+    "build": "echo \"const FIREBASE_CONFIG = { apiKey: '$API_KEY', authDomain: 'knvi-coffee.firebaseapp.com', projectId: 'knvi-coffee', storageBucket: 'knvi-coffee.firebasestorage.app', messagingSenderId: '358990134420', appId: '1:358990134420:web:b627fc7767270b23c9c881' }; const APP_PIN = '$APP_PIN';\" > env.js"
+  }
+}
