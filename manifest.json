@@ -1,0 +1,21 @@
+{
+  "name": "Cherry Coffee POS",
+  "short_name": "CherryPOS",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fdf8f6",
+  "theme_color": "#d97706",
+  "description": "Sistem POS dan manajemen stok Cherry Coffee",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/924/924514.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/924/924514.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
