@@ -644,7 +644,10 @@ const openEditModal = (type, id) => {
             <input type="text" id="edit-nama" value="${item.nama}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required></div>
             <div><label class="block text-sm font-medium text-gray-600 mb-1">Jumlah (kg)</label>
             <input type="number" step="0.1" id="edit-kg" value="${item.kg}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required></div>
+            <div><label class="block text-sm font-medium text-gray-600 mb-1">Upah per kg (Rp)</label>
+            <input type="text" inputmode="numeric" id="edit-upah-per-kg" value="${formatInputRibuan(item.upahPerKg)}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required></div>
         `;
+        document.getElementById('edit-upah-per-kg').addEventListener('input', function() { this.value = formatInputRibuan(this.value); });
     } else if (type === 'penjualan') {
         fields.innerHTML = `
             <div><label class="block text-sm font-medium text-gray-600 mb-1">Jumlah Terjual (kg)</label>
@@ -681,6 +684,7 @@ document.getElementById('form-edit').addEventListener('submit', async (e) => {
             const item = state.setoran.find(i => i.id === id);
             const newNama = document.getElementById('edit-nama').value.trim();
             const newKg = parseFloat(document.getElementById('edit-kg').value);
+            const newUpahPerKg = parseRupiahToNumber(document.getElementById('edit-upah-per-kg').value);
             
             let empId = item.empId;
             let finalNama = item.nama;
@@ -702,7 +706,8 @@ document.getElementById('form-edit').addEventListener('submit', async (e) => {
                 empId: empId,
                 nama: finalNama,
                 kg: newKg,
-                totalUpah: newKg * item.upahPerKg
+                upahPerKg: newUpahPerKg,
+                totalUpah: newKg * newUpahPerKg
             });
             
         } else if (type === 'penjualan') {
@@ -793,7 +798,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Setoran Submit
     document.getElementById('form-setoran').addEventListener('submit', async (e) => {
         e.preventDefault();
-        if (state.settings.upahPerKg <= 0) return showToast('Peringatan: Atur Master Config dahulu!', 'error');
+        if (state.settings.upahPerKg < 0) return showToast('Peringatan: Atur Master Config dahulu!', 'error');
 
         const btn = e.target.querySelector('button[type="submit"]');
         btn.disabled = true;
@@ -811,14 +816,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            const isPribadi = document.getElementById('check-pribadi').checked;
+            const currentUpahPerKg = isPribadi ? 0 : state.settings.upahPerKg;
+
             const payload = {
                 date: getTodayDate(),
                 timestamp: new Date().toISOString(),
                 empId: empId,
                 nama: empNama,
                 kg: kg,
-                upahPerKg: state.settings.upahPerKg,
-                totalUpah: kg * state.settings.upahPerKg
+                upahPerKg: currentUpahPerKg,
+                totalUpah: kg * currentUpahPerKg
             };
 
             if (!navigator.onLine) {
@@ -837,6 +845,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('emp-picker-label').className = 'text-sm font-medium text-blue-700';
             document.getElementById('emp-picker-sub').innerText = 'Belum ada yang dipilih';
             document.getElementById('input-kg-setoran').value = '';
+            document.getElementById('check-pribadi').checked = false;
         } catch (error) {
             showToast('Gagal menyimpan setoran: ' + error.message, 'error');
         } finally {
